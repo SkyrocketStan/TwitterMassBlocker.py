@@ -55,6 +55,15 @@ def get_sorted_list_to_block(my_friends, enemy_followers):
     sorted_ids = list(set(enemy_followers) - set(my_friends))
     return sorted_ids
 
+# Clear list from any duplicates
+def get_sorted_list(list_to_sort, clear_list):
+    return list(set(list_to_sort) - set(clear_list))
+
+# Get list my blocked IDs
+def get_my_block_list(api):
+    print("Getting MY blocked list..")
+    return api.blocks_ids()['ids']
+
 # At first take the enemy's name. Otherwise no sense to establish connection
 enemy_name = get_enemy_name()
 #Establish connection
@@ -63,15 +72,35 @@ client = connect()
 my_ID = get_my_id(client)
 # Get enemy's ID
 enemy_ID = get_enemy_ID(client, enemy_name)
+
 # Get enemy's followers
 enemy_followers = get_followers(client, enemy_ID)
-print("Enemy's followers cout: " + str(len(enemy_followers)))
+enemy_followers_count = len(enemy_followers)
+print("Enemy's followers cout: " + str(enemy_followers_count))
+
+# Get my friends and my block list
 my_friends = get_my_friends(client)
+my_blocked = get_my_block_list(client)
+my_blocked_count = len(my_blocked)
+print("My blocked counter: " + str(my_blocked_count))
+# i do not want to block my friends
 enemy_sorted_followers = get_sorted_list_to_block(my_friends, enemy_followers)
-print("Sorted enemy's followers count: " + str(len(enemy_sorted_followers)))
-# block'em all
-print("Let's block them all..")
+
+# Clear blocked list from ID's that is already blocked
+enemy_followers_list = get_sorted_list(enemy_sorted_followers, my_blocked)
+
+enemy_followers_sorted_count = len(enemy_followers_list)
+
+
+print("Blocking the enemy..")
 block_enemy(client, enemy_ID)
-mass_blocking(client, enemy_sorted_followers)
+
+if enemy_followers_sorted_count > 0:
+    # block'em all
+    print("Sorted enemy's followers to block: " + str(enemy_followers_sorted_count))
+    print("Let's block them all..")
+    mass_blocking(client, enemy_sorted_followers)
+else:
+    print("No followers to block!")
 
 print("Well done!")
