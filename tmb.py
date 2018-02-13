@@ -45,6 +45,16 @@ def mass_blocking(api, id_list):
     for id in id_list:
         block_enemy(api, id)
 
+# Get my friends list
+def get_my_friends(api):
+    return api.friends_ids()
+
+# Make sure I do not block any of MY friends
+def get_sorted_list_to_block(my_friends, enemy_followers):
+    print("Calculating list to block..")
+    sorted_ids = list(set(enemy_followers) - set(my_friends))
+    return sorted_ids
+
 # At first take the enemy's name. Otherwise no sense to establish connection
 enemy_name = get_enemy_name()
 #Establish connection
@@ -55,10 +65,13 @@ my_ID = get_my_id(client)
 enemy_ID = get_enemy_ID(client, enemy_name)
 # Get enemy's followers
 enemy_followers = get_followers(client, enemy_ID)
-print('Enemy followers cout: ' + str(len(enemy_followers)))
-
+print("Enemy's followers cout: " + str(len(enemy_followers)))
+my_friends = get_my_friends(client)
+enemy_sorted_followers = get_sorted_list_to_block(my_friends, enemy_followers)
+print("Sorted enemy's followers count: " + str(len(enemy_sorted_followers)))
 # block'em all
+print("Let's block them all..")
 block_enemy(client, enemy_ID)
-mass_blocking(client, enemy_followers)
+mass_blocking(client, enemy_sorted_followers)
 
-print("Well done")
+print("Well done!")
