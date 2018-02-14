@@ -6,7 +6,7 @@ import sys
 
 #Make a connection
 def connect():
-    print("Connecting..")
+    print("Establishing a connection..")
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
@@ -30,7 +30,15 @@ def get_enemy_name():
 
 # Returns enemy ID
 def get_enemy_ID(api, enemy_name):
-    return api.get_user(enemy_name).id
+    print("Checking the username..")
+    try:
+        id = api.get_user(enemy_name).id
+    except tweepy.TweepError as e:
+        print("Error. Code " + str(e.args[0][0]['code']) + ". " + e.args[0][0]['message'])
+        sys.exit()
+    else:
+        return id
+
 
 # Returns enemy's followers
 def get_followers(api, id):
