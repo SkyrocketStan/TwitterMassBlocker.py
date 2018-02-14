@@ -38,7 +38,11 @@ def get_followers(api, id):
 
 # Block the enemy by ID
 def block_enemy(api, id):
-    block_response = api.create_block(id) # response variable is for future using
+    try:
+        api.create_block(id)
+    except tweepy.TweepError as e:
+        print("Error. Code " + str(e.args[0][0]['code']) + ". " + e.args[0][0]['message'])
+
 
 # Mass blocking
 def mass_blocking(api, id_list):
