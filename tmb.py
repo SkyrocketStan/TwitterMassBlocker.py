@@ -23,7 +23,7 @@ def get_enemy_name():
         sys.exit("USAGE: " + sys.argv[0] + " <twitter_username> without @ sign")
     else:
         try:
-            return sys.argv[1]
+            return sys.argv[1].strip("/@ ")
         except IndexError:
             print("Something wrong with the command line argument")
             return False
