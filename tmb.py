@@ -34,7 +34,10 @@ def get_enemy_ID(api, enemy_name):
     try:
         id = api.get_user(enemy_name).id
     except tweepy.TweepError as e:
-        print("Error. Code " + str(e.args[0][0]['code']) + ". " + e.args[0][0]['message'])
+        try:
+            print("Error. Code " + str(e.args[0][0]['code']) + ". " + e.args[0][0]['message'])
+        except TypeError:
+            print("Unexpected type error found: ", str(e))
         sys.exit()
     else:
         return id
@@ -49,7 +52,10 @@ def block_enemy(api, id):
     try:
         api.create_block(id)
     except tweepy.TweepError as e:
-        print("Error. Code " + str(e.args[0][0]['code']) + ". " + e.args[0][0]['message'])
+        try:
+            print("Error. Code " + str(e.args[0][0]['code']) + ". " + e.args[0][0]['message'])
+        except TypeError:
+            print("Unexpected type error found: ", str(e))
 
 
 # Mass blocking
